@@ -35,6 +35,7 @@ useEffect(()=>{
       headers : {'Content-type':'application/json'},
       body: JSON.stringify({name: name.substring(price.length+1),price,description,datetime})
     }).then(res =>{
+      
       setName("")
       setDescription("")
       setDateTime("")
@@ -42,9 +43,10 @@ useEffect(()=>{
         console.log("result : ", json);
         
       })
-    })
-
-    
+    }).catch(err => {
+      console.error("fetching error : ", err.message);
+      
+    });
   }
   
   let bal=0;
@@ -58,13 +60,30 @@ useEffect(()=>{
       setBalance(bal)
       console.log(bal); 
     },[transactions])
+
+    const handleclear= ()=>{
+      const url= import.meta.env.VITE_API_URL + "/deletetransactions"
+      fetch(url,{
+        method : 'POST',
+      headers : {'Content-type':'application/json'},
+      body: JSON.stringify({})
+      }).then(res=> res.json().then(json =>{
+        console.log(json.message)
+        window.location.reload()
+      } 
+    ))
+    }
  
 
   return (
     <>
     <main>
 
-     <h1>${balance}<span>.00</span> </h1>
+
+     <h1>rs {balance}<span>.00</span> </h1>
+
+     <button className='clear' onClick={handleclear}>clear all</button>
+
      <form onSubmit={addNewTransaction}>
         <div className='basic'>
 

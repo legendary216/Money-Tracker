@@ -18,10 +18,14 @@ app.post('/api/transaction', async (req,res)=>{
 
     //console.log(process.env.MONGO_URL);  
     
-    //connect to DB
-    await mongoose.connect(process.env.MONGO_URL)
+    //connect to DB 
+    await mongoose.connect(process.env.MONGO_URL)  
 
     const { name, price , description , datetime } = req.body;
+
+    if (!name || !price || !description || !datetime) {
+        return res.status(400).json({ error: 'Missing required fields' });
+      }
 
     //add the data to transaction schema
     //we use the model name to create entry 
@@ -41,8 +45,19 @@ app.get('/api/transactions',async (req,res)=>{
     res.json(transactions)
 })
 
+app.post('/api/deletetransactions',async(req,res)=>{
+
+    
+    await mongoose.connect(process.env.MONGO_URL)
+   
+
+  await TransactionModel.deleteMany({})
+
+    res.json({message: "all transactions deleted "})
+})
+
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
-//
+// 
